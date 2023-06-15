@@ -274,7 +274,11 @@ impl SeewoRequest {
         let header_map = to_header_map(&headers)?;
 
         // debug!(?request.method, ?request.url, ?header_map);
-        let client = reqwest::Client::new();
+        let client = reqwest::ClientBuilder::new()
+            .danger_accept_invalid_certs(true)
+            .build()
+            .expect("build_reqwest?");
+        // let client = reqwest::Client::new();
         let uri = self.get_uri()?;
         let uri_with_host = format!("{}{}", config.get_host(), uri);
         let mut url = Url::parse(&uri_with_host).context(BuildUri2Snafu)?;
